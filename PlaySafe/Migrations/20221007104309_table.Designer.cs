@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlaySafe.Data;
 
@@ -11,9 +12,10 @@ using PlaySafe.Data;
 namespace PlaySafe.Migrations
 {
     [DbContext(typeof(PlaySafeContext))]
-    partial class PlaySafeContextModelSnapshot : ModelSnapshot
+    [Migration("20221007104309_table")]
+    partial class table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

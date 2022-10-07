@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Session;
 using Microsoft.EntityFrameworkCore;
 using PlaySafe.Data;
 using PlaySafe.Models;
 
 namespace PlaySafe.Controllers
 {
+    
     public class UsersController : Controller
     {
         private readonly PlaySafeContext _context;
@@ -25,7 +29,7 @@ namespace PlaySafe.Controllers
               return View(await _context.User.ToListAsync());
         }
 
-        // GET: Users/Details/5
+        // GET: Users/Details/5 
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null || _context.User == null)
@@ -58,6 +62,7 @@ namespace PlaySafe.Controllers
         {
             if (ModelState.IsValid)
             {
+                
                 user.User_Id = Guid.NewGuid();
                 _context.Add(user);
                 await _context.SaveChangesAsync();
@@ -158,19 +163,28 @@ namespace PlaySafe.Controllers
         {
           return _context.User.Any(e => e.User_Id == id);
         }
-        [HttpPost]
-        public int choose_match(Guid id,User userr)
+
+        [HttpGet]
+        public IActionResult login()
         {
-            var match = _context.Matches.FirstOrDefault(m => m.Match_ID == id);
-            if (match == null)
-            { return 0; }
-            User_Match user = new User_Match()
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> login( loginViewModel loginobj)
+        {
+            var found = _context.User.Where(m => m.UserName == loginobj.UserName && m.Password == loginobj.Password).FirstOrDefault();
+            if (found != null)
             {
-                User_Id = userr.User_Id,
-                Match_ID = match.Match_ID
-            };
-                _context.UserMatch.Add(user);
-            return 1;
+                
+             var id = found.User_Id;
+             //HttpContext.Session.SetString("userID",Convert.ToString(id));
+             
+                return Redirect("/Users/Details/"+id);
+    
+            }
+        
+            return Redirect("/Users/Create"); ;
         }
     }
 }
