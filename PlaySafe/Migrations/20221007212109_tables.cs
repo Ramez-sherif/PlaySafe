@@ -5,16 +5,29 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PlaySafe.Migrations
 {
-    public partial class table : Migration
+    public partial class tables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Entry",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    price = table.Column<int>(type: "int", nullable: false),
+                    points = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Entry", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "User_type",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    User_Type = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    user_Type = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -22,18 +35,18 @@ namespace PlaySafe.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "specials",
+                name: "Specials",
                 columns: table => new
                 {
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AD_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Specials = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Special = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_specials", x => x.ID);
+                    table.PrimaryKey("PK_Specials", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_specials_User_type_AD_id",
+                        name: "FK_Specials_User_type_AD_id",
                         column: x => x.AD_id,
                         principalTable: "User_type",
                         principalColumn: "Id",
@@ -44,23 +57,20 @@ namespace PlaySafe.Migrations
                 name: "User",
                 columns: table => new
                 {
-                    User_Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Admin_ID = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    U_Typeid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Pic = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Phone_Num = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Points = table.Column<int>(type: "int", nullable: false)
+                    user_Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    u_Typeid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    nserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    phone_Num = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.User_Id);
+                    table.PrimaryKey("PK_User", x => x.user_Id);
                     table.ForeignKey(
-                        name: "FK_User_User_type_U_Typeid",
-                        column: x => x.U_Typeid,
+                        name: "FK_User_User_type_u_Typeid",
+                        column: x => x.u_Typeid,
                         principalTable: "User_type",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -90,17 +100,17 @@ namespace PlaySafe.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    U_IDUser_Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    userID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comments_User_U_IDUser_Id",
-                        column: x => x.U_IDUser_Id,
+                        name: "FK_Comments_User_userID",
+                        column: x => x.userID,
                         principalTable: "User",
-                        principalColumn: "User_Id",
+                        principalColumn: "user_Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -110,17 +120,23 @@ namespace PlaySafe.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     userid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Cost = table.Column<int>(type: "int", nullable: false)
+                    entryid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Match_History", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Match_History_Entry_entryid",
+                        column: x => x.entryid,
+                        principalTable: "Entry",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Match_History_User_userid",
                         column: x => x.userid,
                         principalTable: "User",
-                        principalColumn: "User_Id",
+                        principalColumn: "user_Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -138,14 +154,40 @@ namespace PlaySafe.Migrations
                         name: "FK_NFC_User_Userid",
                         column: x => x.Userid,
                         principalTable: "User",
-                        principalColumn: "User_Id",
+                        principalColumn: "user_Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Player",
+                columns: table => new
+                {
+                    player_Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    userid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    admin_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    pic = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    points = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Player", x => x.player_Id);
+                    table.ForeignKey(
+                        name: "FK_Player_User_userid",
+                        column: x => x.userid,
+                        principalTable: "User",
+                        principalColumn: "user_Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_U_IDUser_Id",
+                name: "IX_Comments_userID",
                 table: "Comments",
-                column: "U_IDUser_Id");
+                column: "userID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Match_History_entryid",
+                table: "Match_History",
+                column: "entryid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Match_History_userid",
@@ -158,14 +200,19 @@ namespace PlaySafe.Migrations
                 column: "Userid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_specials_AD_id",
-                table: "specials",
+                name: "IX_Player_userid",
+                table: "Player",
+                column: "userid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Specials_AD_id",
+                table: "Specials",
                 column: "AD_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_U_Typeid",
+                name: "IX_User_u_Typeid",
                 table: "User",
-                column: "U_Typeid");
+                column: "u_Typeid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Usertype_pages_userTypeid",
@@ -185,10 +232,16 @@ namespace PlaySafe.Migrations
                 name: "NFC");
 
             migrationBuilder.DropTable(
-                name: "specials");
+                name: "Player");
+
+            migrationBuilder.DropTable(
+                name: "Specials");
 
             migrationBuilder.DropTable(
                 name: "Usertype_pages");
+
+            migrationBuilder.DropTable(
+                name: "Entry");
 
             migrationBuilder.DropTable(
                 name: "User");

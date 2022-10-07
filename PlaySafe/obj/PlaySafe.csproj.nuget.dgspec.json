@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\LENOVO\\source\\repos\\PlaySafe\\PlaySafe\\PlaySafe.csproj": {}
+    "D:\\Ramez's study\\wok\\PlaySafe\\PlaySafe\\PlaySafe.csproj": {}
   },
   "projects": {
-    "C:\\Users\\LENOVO\\source\\repos\\PlaySafe\\PlaySafe\\PlaySafe.csproj": {
+    "D:\\Ramez's study\\wok\\PlaySafe\\PlaySafe\\PlaySafe.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\LENOVO\\source\\repos\\PlaySafe\\PlaySafe\\PlaySafe.csproj",
+        "projectUniqueName": "D:\\Ramez's study\\wok\\PlaySafe\\PlaySafe\\PlaySafe.csproj",
         "projectName": "PlaySafe",
-        "projectPath": "C:\\Users\\LENOVO\\source\\repos\\PlaySafe\\PlaySafe\\PlaySafe.csproj",
+        "projectPath": "D:\\Ramez's study\\wok\\PlaySafe\\PlaySafe\\PlaySafe.csproj",
         "packagesPath": "C:\\Users\\LENOVO\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\LENOVO\\source\\repos\\PlaySafe\\PlaySafe\\obj\\",
+        "outputPath": "D:\\Ramez's study\\wok\\PlaySafe\\PlaySafe\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\LENOVO\\AppData\\Roaming\\NuGet\\NuGet.Config",

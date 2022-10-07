@@ -9,7 +9,7 @@ namespace PlaySafe.Models
         public Guid ID { get; set; }
         public Guid userTypeid { get; set; }
         [ForeignKey("userTypeid")]
-        public User_type UserTypeID { get; set; }
+        public User_type userTypeID { get; set; }
         public int pages { get; set; }
 
 

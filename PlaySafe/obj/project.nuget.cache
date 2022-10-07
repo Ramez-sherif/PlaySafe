@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ID34q2TUVpZZ0h7DmpNhfNNz541bh0GNAhfuP2o3qbIo08VSJGkDAeMFaW1qKaPf0YMTXMh/jEmdgF9oj3l7MQ==",
+  "dgSpecHash": "8MMWucCJDn7Dyh7d+pSItmH6dITdr1B4Ct8oor2JxBhFhqKufMs48G0o0kDw8aUZe5UrNEFd2mG2lD4iMHpoqQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\LENOVO\\source\\repos\\PlaySafe\\PlaySafe\\PlaySafe.csproj",
+  "projectFilePath": "D:\\Ramez's study\\wok\\PlaySafe\\PlaySafe\\PlaySafe.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\LENOVO\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\LENOVO\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",

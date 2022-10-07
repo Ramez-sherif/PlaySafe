@@ -28,18 +28,35 @@ namespace PlaySafe.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Comment")
+                    b.Property<string>("comment")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("U_IDUser_Id")
+                    b.Property<Guid>("userID")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("U_IDUser_Id");
+                    b.HasIndex("userID");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("PlaySafe.Models.Entry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("points")
+                        .HasColumnType("int");
+
+                    b.Property<int>("price")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Entry");
                 });
 
             modelBuilder.Entity("PlaySafe.Models.Match_History", b =>
@@ -48,16 +65,18 @@ namespace PlaySafe.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Cost")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("entryid")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("userid")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("entryid");
 
                     b.HasIndex("userid");
 
@@ -80,7 +99,33 @@ namespace PlaySafe.Migrations
                     b.ToTable("NFC");
                 });
 
-            modelBuilder.Entity("PlaySafe.Models.specials", b =>
+            modelBuilder.Entity("PlaySafe.Models.player", b =>
+                {
+                    b.Property<Guid>("player_Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("admin_ID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("pic")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("points")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("userid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("player_Id");
+
+                    b.HasIndex("userid");
+
+                    b.ToTable("Player");
+                });
+
+            modelBuilder.Entity("PlaySafe.Models.Specials", b =>
                 {
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
@@ -89,7 +134,7 @@ namespace PlaySafe.Migrations
                     b.Property<Guid>("AD_id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Specials")
+                    b.Property<string>("Special")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -97,51 +142,40 @@ namespace PlaySafe.Migrations
 
                     b.HasIndex("AD_id");
 
-                    b.ToTable("specials");
+                    b.ToTable("Specials");
                 });
 
             modelBuilder.Entity("PlaySafe.Models.User", b =>
                 {
-                    b.Property<Guid>("User_Id")
+                    b.Property<Guid>("user_Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Admin_ID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("nserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Phone_Num")
+                    b.Property<string>("password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Pic")
+                    b.Property<string>("phone_Num")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Points")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("U_Typeid")
+                    b.Property<Guid>("u_Typeid")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("user_Id");
 
-                    b.HasKey("User_Id");
-
-                    b.HasIndex("U_Typeid");
+                    b.HasIndex("u_Typeid");
 
                     b.ToTable("User");
                 });
@@ -152,7 +186,7 @@ namespace PlaySafe.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("User_Type")
+                    b.Property<string>("user_Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -182,68 +216,87 @@ namespace PlaySafe.Migrations
 
             modelBuilder.Entity("PlaySafe.Models.Comments", b =>
                 {
-                    b.HasOne("PlaySafe.Models.User", "U_ID")
+                    b.HasOne("PlaySafe.Models.User", "user")
                         .WithMany()
-                        .HasForeignKey("U_IDUser_Id")
+                        .HasForeignKey("userID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("U_ID");
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("PlaySafe.Models.Match_History", b =>
                 {
-                    b.HasOne("PlaySafe.Models.User", "User_ID")
+                    b.HasOne("PlaySafe.Models.Entry", "entry")
+                        .WithMany()
+                        .HasForeignKey("entryid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PlaySafe.Models.User", "user")
                         .WithMany()
                         .HasForeignKey("userid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User_ID");
+                    b.Navigation("entry");
+
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("PlaySafe.Models.NFC", b =>
                 {
-                    b.HasOne("PlaySafe.Models.User", "UserID")
+                    b.HasOne("PlaySafe.Models.User", "user")
                         .WithMany()
                         .HasForeignKey("Userid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("UserID");
+                    b.Navigation("user");
                 });
 
-            modelBuilder.Entity("PlaySafe.Models.specials", b =>
+            modelBuilder.Entity("PlaySafe.Models.player", b =>
                 {
-                    b.HasOne("PlaySafe.Models.User_type", "AD_ID")
+                    b.HasOne("PlaySafe.Models.User", "user")
+                        .WithMany()
+                        .HasForeignKey("userid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("PlaySafe.Models.Specials", b =>
+                {
+                    b.HasOne("PlaySafe.Models.User_type", "user_type")
                         .WithMany()
                         .HasForeignKey("AD_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AD_ID");
+                    b.Navigation("user_type");
                 });
 
             modelBuilder.Entity("PlaySafe.Models.User", b =>
                 {
-                    b.HasOne("PlaySafe.Models.User_type", "USer_type")
+                    b.HasOne("PlaySafe.Models.User_type", "user_type")
                         .WithMany()
-                        .HasForeignKey("U_Typeid")
+                        .HasForeignKey("u_Typeid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("USer_type");
+                    b.Navigation("user_type");
                 });
 
             modelBuilder.Entity("PlaySafe.Models.Usertype_pages", b =>
                 {
-                    b.HasOne("PlaySafe.Models.User_type", "UserTypeID")
+                    b.HasOne("PlaySafe.Models.User_type", "userTypeID")
                         .WithMany()
                         .HasForeignKey("userTypeid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("UserTypeID");
+                    b.Navigation("userTypeID");
                 });
 #pragma warning restore 612, 618
         }

@@ -6,6 +6,6 @@ namespace PlaySafe.Models
     {
         [Key]
         public Guid Id { get; set; } 
-        public string User_Type { get; set; }
+        public string user_Type { get; set; }
     }
 }

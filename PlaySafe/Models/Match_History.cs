@@ -7,9 +7,15 @@ namespace PlaySafe.Models
         public Guid Id { get; set; }
         public Guid userid { get; set; }
         [ForeignKey("userid")]
-        public User User_ID { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
-        public int Cost { get; set; }
+        public User user { get; set; }
+        public Guid entryid { get; set; }
+        [ForeignKey("entryid")]
+  
+        public Entry entry { get; set; }    
+
+        public DateTime createdDate { get; set; } = DateTime.Now;
+        
+
 
 
     }

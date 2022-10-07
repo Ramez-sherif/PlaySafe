@@ -6,9 +6,9 @@ namespace PlaySafe.Models
     public class NFC
     {
         public Guid NFCId { get; set; }
-        public Guid Userid { get; set; }
+        public  Guid Userid { get; set; }
         [ForeignKey("Userid")]
-        public User UserID { get; set; }
+        public User user { get; set; }
 
     }
 }
