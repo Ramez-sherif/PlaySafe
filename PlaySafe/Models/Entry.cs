@@ -1,8 +1,11 @@
-﻿namespace PlaySafe.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PlaySafe.Models
 {
-    public class Entry
+    public class entry
     {
-        public Guid Id { get; set; }
+        [Key]
+        public Guid id { get; set; }
         public int price { get; set; }
         public int points { get; set; }
     }

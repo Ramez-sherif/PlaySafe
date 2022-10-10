@@ -1,15 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlaySafe.Models
 {
-    public class Comments
+    public class comments
     {
-        public Guid  Id { get; set; }
+        [Key]
+        public Guid id { get; set; }
         public string comment { get; set; }
-        public Guid userID { get; set; }
-        [ForeignKey("userID")]
-        public User user { get; set; }
-        
-
+        public Guid userId { get; set; }
+        [ForeignKey("userId")]
+        public user user { get; set; }
     }
 }

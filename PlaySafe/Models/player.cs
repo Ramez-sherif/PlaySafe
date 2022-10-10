@@ -6,17 +6,14 @@ namespace PlaySafe.Models
     public class player
     {
         [Key]
-        public Guid player_Id { get; set; }
-        public Guid userid { get; set; }
-
-        [ForeignKey("userid")]
-        public User user { get; set; }
-        public Guid admin_ID { get; set; }
+        public Guid id { get; set; }
+        public Guid userId { get; set; }
+        [ForeignKey("userId")]
+        public user user { get; set; }
+        public Guid adminId { get; set; }
         [Required]
         public string pic { get; set; }
-        [Required]
         public int points { get; set; } = 0;
-
 
     }
 }
