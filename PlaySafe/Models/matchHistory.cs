@@ -16,10 +16,11 @@ namespace PlaySafe.Models
         public entry entry { get; set; }
         public DateTime createdDate { get; set; } = DateTime.Now;
         public bool active { get; set; }
-
+        public bool withPoints { get; set; }
     }
     public class matchViewModel 
     {
-        public int matchCost;
+        public int matchCost { get; set; }
+        public bool withPoints { get; set; }
     }
 }

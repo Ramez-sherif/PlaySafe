@@ -12,7 +12,7 @@ using PlaySafe.Data;
 namespace PlaySafe.Migrations
 {
     [DbContext(typeof(dbContext))]
-    [Migration("20221008222412_init")]
+    [Migration("20221012174454_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -78,6 +78,9 @@ namespace PlaySafe.Migrations
 
                     b.Property<Guid>("userId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("withPoints")
+                        .HasColumnType("bit");
 
                     b.HasKey("id");
 
@@ -163,13 +166,19 @@ namespace PlaySafe.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("password")
+                    b.Property<byte[]>("password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("phoneNum")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("photo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("points")
+                        .HasColumnType("int");
 
                     b.Property<string>("userName")
                         .IsRequired()

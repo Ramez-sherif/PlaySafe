@@ -8,22 +8,38 @@ using Microsoft.EntityFrameworkCore;
 using PlaySafe.Data;
 using PlaySafe.Models;
 using Microsoft.AspNetCore.Http;
+using System.Security.Cryptography;
+using System.Text;
+using Microsoft.AspNetCore.Hosting;
 
 namespace PlaySafe.Controllers
 {
     public class usersController : Controller
     {
         private readonly dbContext _context;
+        private readonly IWebHostEnvironment _hostingEnvirnoment;
 
-        public usersController(dbContext context)
+        public usersController(dbContext context, IWebHostEnvironment hostingEnvironment)
         {
+            _hostingEnvirnoment = hostingEnvironment;
             _context = context;
         }
 
         // GET: users
         public async Task<IActionResult> Index()
         {
-            var dbContext = _context.user.Include(u => u.userType);
+            var typeIsUser = _context.userType.Where(x => x.usersType == "player").FirstOrDefault();
+            var userType = HttpContext.Session.GetString("userType");
+
+
+            if (userType == "Admin") typeIsUser = _context.userType.Where(x => x.usersType == "Guard").FirstOrDefault();
+
+            else if (userType == "Owner") typeIsUser = _context.userType.Where(x => x.usersType == "Admin").FirstOrDefault();
+
+            else if (userType == "Guard") typeIsUser = _context.userType.Where(x => x.usersType == "Player").FirstOrDefault();
+
+            else return Redirect("/Home/Index");
+            var dbContext = _context.user.Where(u => u.userTypeId == typeIsUser.id);
             return View(await dbContext.ToListAsync());
         }
 
@@ -58,14 +74,23 @@ namespace PlaySafe.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("name,userName,password,phoneNum")] registerViewModel register)
+        public async Task<IActionResult> Create([Bind("name,userName,password,phoneNum,confirmPassword,photo")] registerViewModel register)
         {
             if (ModelState.IsValid)
             {
+                var userNameCheck = _context.user.Where(x => x.userName == register.userName).FirstOrDefault();
+                if(userNameCheck != null)
+                {
+                    string error = register.userName + " is already taken";
+                    ModelState.AddModelError("userName", error);
+                    return View(register);
+                }
+               
                 var typeIsUser = _context.userType.Where(x => x.usersType == "player").FirstOrDefault();
                 if(typeIsUser != null)
                 {
                     var userType = HttpContext.Session.GetString("userType");
+                    
 
                     if (userType == "Admin") typeIsUser = _context.userType.Where(x => x.usersType == "Guard").FirstOrDefault();
 
@@ -74,16 +99,38 @@ namespace PlaySafe.Controllers
                     else if (userType == "Guard") typeIsUser = _context.userType.Where(x => x.usersType == "Player").FirstOrDefault();
 
                     else return Redirect("/Home/Index");
-               
+
+                    Guid id = Guid.NewGuid();
+                    string filename = null;
+                    if (register.photo != null)
+                    {
+                        id = Guid.NewGuid();
+                        string filePath = "images\\" + id.ToString("D");
+                        string path = Path.Combine(_hostingEnvirnoment.WebRootPath, filePath);                                              
+                        if(!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                            filename = register.photo.FileName;
+                            register.photo.CopyTo(new FileStream(Path.Combine(path,filename), FileMode.Create));
+                        }
+                        else
+                        {
+                            //overWrite Image
+                        }
+                            
+                    }
+                    var passwordHash = GetHash(register.password);
                     user User = new user()
                     {
-                        id = Guid.NewGuid(),
+                        id = id,
                         userTypeId = typeIsUser.id,
                         name = register.name,
                         userName = register.userName,
-                        password = register.password,
+                        password = passwordHash,
                         createdDate = DateTime.Now,
-                        phoneNum = register.phoneNum
+                        phoneNum = register.phoneNum,
+                        points = 0,
+                        photo = filename
                     };
                     _context.user.Add(User);
                     await _context.SaveChangesAsync();
@@ -101,12 +148,19 @@ namespace PlaySafe.Controllers
             }
 
             var user = await _context.user.FindAsync(id);
+            var register = new registerViewModel()
+            {
+                name = user.name,
+                userName = user.userName,
+                password = "",
+                confirmPassword = "",
+                phoneNum = user.phoneNum,
+            };
             if (user == null)
             {
                 return NotFound();
             }
-            ViewData["userTypeId"] = new SelectList(_context.Set<userType>(), "id", "id", user.userTypeId);
-            return View(user);
+            return View(register);
         }
 
         // POST: users/Edit/5
@@ -114,23 +168,23 @@ namespace PlaySafe.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("id,userTypeId,name,userName,password,createdDate,phoneNum")] user user)
+        public async Task<IActionResult> Edit(Guid id, [Bind("name,userName,password,confirmPassword,phoneNum")] registerViewModel user)
         {
-            if (id != user.id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(user);
+                    user User = _context.user.Find(id);
+                    User.name = user.name;
+                    User.userName = user.userName;
+                    User.password = GetHash(user.password);
+                    User.phoneNum = user.phoneNum;
+                    _context.user.Update(User);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!userExists(user.id))
+                    if (!userExists(new Guid(HttpContext.Session.GetString("userId"))))
                     {
                         return NotFound();
                     }
@@ -141,7 +195,6 @@ namespace PlaySafe.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["userTypeId"] = new SelectList(_context.Set<userType>(), "id", "id", user.userTypeId);
             return View(user);
         }
 
@@ -158,7 +211,7 @@ namespace PlaySafe.Controllers
                 .FirstOrDefaultAsync(m => m.id == id);
             if (user == null)
             {
-                return NotFound();
+                return Redirect("/Home/index");
             }
 
             return View(user);
@@ -195,7 +248,8 @@ namespace PlaySafe.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> login([Bind("userName,password")] loginViewModel loginCredentials)
         {
-            var user = _context.user.Where(x => x.userName == loginCredentials.userName && x.password == loginCredentials.password).FirstOrDefault();
+            var passwordHash = GetHash(loginCredentials.password);
+            var user = _context.user.Where(x => x.userName == loginCredentials.userName && x.password == passwordHash).FirstOrDefault();
 
             if(user != null)
             {
@@ -219,6 +273,16 @@ namespace PlaySafe.Controllers
         }
         public async Task<IActionResult> ChooseMatch()
         {
+            var costs = _context.entry.ToArray();
+            var points = _context.user.Where(x => x.id == new Guid(HttpContext.Session.GetString("userId"))).FirstOrDefault();
+            List<int> allCosts = new List<int>();
+            foreach(var entry in costs)
+            {
+                allCosts.Add(entry.price);
+            }
+            allCosts.Sort();
+            ViewBag.costs = allCosts;
+            ViewBag.Points = points.points;
             ViewBag.userId = HttpContext.Session.GetString("userId");
             ViewBag.typeId = HttpContext.Session.GetString("userTypeId");
             ViewBag.userType = HttpContext.Session.GetString("userType");
@@ -227,30 +291,77 @@ namespace PlaySafe.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChooseMatch([Bind("matchCost")] matchViewModel match)
+        public async Task<IActionResult> ChooseMatch([Bind("matchCost,withPoints")] matchViewModel match)
         {
+           
+            var costs = _context.entry.ToArray();
+            List<int> allCosts = new List<int>();
+            foreach (var entry2 in costs)
+            {
+                allCosts.Add(entry2.price);
+            }
+            allCosts.Sort();
+            ViewBag.costs = allCosts;
             var userId = HttpContext.Session.GetString("userId");
             var userGuid = new Guid(userId);
-            Console.WriteLine("her her her here: " + match.matchCost);
-            matchHistory lastMatch = _context.matchHistory.Where(n => n.userId == userGuid && n.active == true).FirstOrDefault();
+            var user = _context.user.Where(x => x.id == userGuid).FirstOrDefault();
             var entry = _context.entry.Where(n => n.price == match.matchCost).FirstOrDefault();
-            if (lastMatch == null || lastMatch.createdDate.AddHours(24) >= DateTime.Now)//or last match of date and time - datetime.now is more than 24 hours
+            if(user == null || userId == null || entry == null)
+            {
+                return View("error");//need to change
+            }
+                       
+            matchHistory lastMatch = _context.matchHistory.Where(n => n.userId == userGuid && n.active == true).FirstOrDefault();           
+            if (lastMatch == null || lastMatch.createdDate.AddHours(24) <= DateTime.Now)
              {
-                //if (lastMatch != null) lastMatch.active = false;
+                if(lastMatch != null)
+                {
+                    lastMatch.active = false;
+                }
+                
                 matchHistory matchHistory = new matchHistory()
                 {
                      id = Guid.NewGuid(),
                      userId = userGuid,
                      entryId = entry.id,                     
-                     createdDate = DateTime.Now
+                     createdDate = DateTime.Now,
+                     active = true,
+                     withPoints = match.withPoints
                  };
                  _context.matchHistory.Add(matchHistory);
+                if (match.withPoints)
+                {
+                    user.points = user.points + (match.matchCost * 2);
+                }
+                else
+                {
+                    user.points = user.points + (match.matchCost * 4);
+                }
+               
+                ViewBag.Points = user.points;
+                _context.user.Update(user);
                  _context.SaveChanges();
-                 return Redirect("/Users/Create");
+                
+                //return Redirect("/Users/logOut");                
+                return View();
              }
-            //he has to wait 24 hours to play
-            //return Problem("wait");
+            ViewBag.Points = user.points;
+            ModelState.AddModelError("matchCost", "You Have to until for your next match");
             return View();
+        }
+        public byte[] GetHash(string PasswordHash)
+        {
+            using (HashAlgorithm algorithm = SHA256.Create())
+                return algorithm.ComputeHash(Encoding.UTF8.GetBytes(PasswordHash));
+        }
+        public bool VerifyPasswordHash(string password, byte[] passwordHash)
+        {
+            return passwordHash.SequenceEqual(GetHash(password));
+        }
+        public async Task<IActionResult> logOut()
+        {
+            HttpContext.Session.Clear();
+            return Redirect("/Users/login"); 
         }
     }
 }

@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    var photoPath = "images" + "/" + Model.id.ToString() + "/" + (Model.photo ?? "defaultImage.jpg");
 }
 
 <h1>Details</h1>
@@ -10,12 +11,12 @@
     <h4>user</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.userType)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.photo)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.userType.id)
-        </dd>
+        <dd class="col-md-4">
+            <img class= "card-img-top" src = "~/@photoPath" alt = "no Photo" id= "img" width="50px" height="200px">
+        <dd/>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.name)
         </dt>
@@ -27,13 +28,6 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.userName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.password)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.password)
-        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.createdDate)
         </dt>

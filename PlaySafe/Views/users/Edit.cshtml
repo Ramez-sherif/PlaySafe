@@ -1,4 +1,4 @@
-﻿@model PlaySafe.Models.user
+﻿@model registerViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -12,34 +12,28 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="id" />
             <div class="form-group">
-                <label asp-for="userTypeId" class="control-label"></label>
-                <select asp-for="userTypeId" class="form-control" asp-items="ViewBag.userTypeId"></select>
-                <span asp-validation-for="userTypeId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="name" class="control-label"></label>
+                <label  class="control-label">Full Name:</label>
                 <input asp-for="name" class="form-control" />
                 <span asp-validation-for="name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="userName" class="control-label"></label>
+                <label  class="control-label">Username:</label>
                 <input asp-for="userName" class="form-control" />
                 <span asp-validation-for="userName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="password" class="control-label"></label>
+                <label  class="control-label">Password:</label>
                 <input asp-for="password" class="form-control" />
                 <span asp-validation-for="password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="createdDate" class="control-label"></label>
-                <input asp-for="createdDate" class="form-control" />
-                <span asp-validation-for="createdDate" class="text-danger"></span>
+                <label  class="control-label">Confirm Password:</label>
+                <input asp-for="confirmPassword" class="form-control" />
+                <span asp-validation-for="password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="phoneNum" class="control-label"></label>
+                <label class="control-label">Phone Number:</label>
                 <input asp-for="phoneNum" class="form-control" />
                 <span asp-validation-for="phoneNum" class="text-danger"></span>
             </div>

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "7ux1gpA8Xt5q2cH+GnwNdTXVkQ1vdXZigustnVp94KD8GjZsGLcLYFjLaZGrFdBrLHFsY69lf7IMyYji7Y8Nzg==",
+  "dgSpecHash": "JRyr2R/mlPeV8xhU4xyfqyThRRXCKKSEDIVqRKgO3Bel2iG+pUP1frSS3cC2SeY7K8VBP5B1Dx8IzvfbD5uyiA==",
   "success": true,
-  "projectFilePath": "F:\\Work2\\PlaySafe\\PlaySafe\\PlaySafe.csproj",
+  "projectFilePath": "F:\\PlaySafe\\PlaySafe\\PlaySafe.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\amrem\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\amrem\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",

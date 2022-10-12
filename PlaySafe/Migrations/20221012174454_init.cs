@@ -61,9 +61,11 @@ namespace PlaySafe.Migrations
                     userTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     userName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    password = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    phoneNum = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    phoneNum = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    photo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    points = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -122,7 +124,8 @@ namespace PlaySafe.Migrations
                     userId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     entryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    active = table.Column<bool>(type: "bit", nullable: false)
+                    active = table.Column<bool>(type: "bit", nullable: false),
+                    withPoints = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

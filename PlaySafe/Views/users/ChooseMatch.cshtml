@@ -1,71 +1,53 @@
-﻿@model PlaySafe.Models.matchViewModel
+﻿@model matchViewModel
 @{
     ViewData["Title"] = "ChooseMatch";
 }
-<script>
-    function match(cost) {
-        var values = document.getElementById("matchCost");
-        values.value = cost;
-        const costs = [5,10,20];
-        for (let i = 0; i < costs.length; i++) {
-           let match = document.getElementById(costs[i]);
-           match.classList.remove = "chosen";
-            match.classList = "matches";
-        }
-        let choseMatch = document.getElementById(cost);
-        choseMatch.classList = "chosen";
-        choseMatch.classList.remove = "matches";
-        
-    }
-</script>
 
-<style>
-    .matches {
-        background-color:white;
-        border:solid black;
-        padding:10px;
-        margin-right:10px;
-    }
-
-    .matches:hover{
-        cursor:pointer;
-        transition: 2s;
-    }
-    .chosen{
-        border:solid black;
-        padding:10px;
-        margin-right:10px;
-        background-color:dimgrey;
-    }
-    .points{
-        margin-top: 10px;
-    }
-</style>
 <h1>ChooseMatch</h1>
-    <div class="col-md-4">
+<br>
+<div class="col-md-4">
     <form asp-action="ChooseMatch">
-        <div>
-        <p>User Id: @ViewBag.userId</p>
-        <p>User Type Id: @ViewBag.typeId</p>
-        <p>User Type: @ViewBag.userType</p>
+        <!--
+
+                <div>
+                <p>User Id: @ViewBag.userId</p>
+                <p>User Type Id: @ViewBag.typeId</p>
+                <p>User Type: @ViewBag.userType</p>
+                </div>
+                        <label  class="control-label">Match Cost</label>
+            <div id="matches">
+
+            <p class = "matches" id="5" onclick="match(5)">5</p>
+
+            <p class = "matches"id="10" onclick="match(10)">10</p>
+
+            <p class="matches" id="20" onclick="match(20)">20</p>
         </div>
-                <label  class="control-label">Match Cost</label>
-    <div id="matches">
+                -->
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            
+              
 
-    <p class = "matches" id="5" onclick="match(5)">5</p>
-     
-    <p class = "matches"id="10" onclick="match(10)">10</p>
-
-    <p class="matches" id="20" onclick="match(20)">20</p>
+            <select asp-for="matchCost"  class="form-control" >
+            @foreach(var item in ViewBag.costs){
+                <option>@item</option>
+            }    
+            </select>
+             
+            <span asp-validation-for="matchCost" class="text-danger"></span>
+        </div>
+        <br>
+        <input type="submit" value="enter" class="btn btn-primary" />
+        <input asp-for="withPoints" type ="checkbox"/> Pay with points
+    </form>
 </div>
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <input asp-for="matchCost" type = hidden class="form-control" id="matchCost" />
-                <span asp-validation-for="matchCost" class="text-danger"></span>
-            </div>
-            <input type="submit" value="enter" class="btn btn-primary" />
-        </form>
-    </div>
 
-    <br>
-<div class="points">Your Points:</div>
+<br>
+<div class="points">Your Points: @ViewBag.Points</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

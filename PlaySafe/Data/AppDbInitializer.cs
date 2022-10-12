@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using PlaySafe.Models;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace PlaySafe.Data
 {
@@ -9,6 +12,7 @@ namespace PlaySafe.Data
         {
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
+               
                 var context = serviceScope.ServiceProvider.GetService<dbContext>();
                 if (context == null) return;
                 if (!context.userType.Any())
@@ -38,21 +42,29 @@ namespace PlaySafe.Data
                 }
                 
                 var ownerId = context.userType.Where(x => x.usersType == "Owner").FirstOrDefault();
+                
+                
                 if (ownerId != null) {
-                    if (!context.user.Where(x => x.userTypeId == ownerId.id).Any()){
-                        context.user.Add(
-                        new user()
+                        if (!context.user.Where(x => x.userTypeId == ownerId.id).Any())
                         {
-                            id = Guid.NewGuid(),
-                            userTypeId = ownerId.id,
-                            name = "defaultOwner",
-                            userName = "Admin",
-                            password = "Admin",
-                            createdDate = DateTime.Now,
-                            phoneNum = "123"
-                        });
-                 context.SaveChanges();
-                    }
+                            using (HashAlgorithm algorithm = SHA256.Create())
+                            {
+                                byte[] password = algorithm.ComputeHash(Encoding.UTF8.GetBytes("Admin"));
+                                context.user.Add(
+                                new user()
+                                {
+                                    id = Guid.NewGuid(),
+                                    userTypeId = ownerId.id,
+                                    name = "defaultOwner",
+                                    userName = "Admin",
+                                    password = password,
+                                    createdDate = DateTime.Now,
+                                    phoneNum = "123",
+                                    photo = "/admin/photo"
+                                });
+                            }
+                    context.SaveChanges();
+                        }
                 }
                 if (!context.entry.Any())
                 {

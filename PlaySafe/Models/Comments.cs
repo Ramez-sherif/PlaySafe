@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlaySafe.Models
@@ -7,6 +8,7 @@ namespace PlaySafe.Models
     {
         [Key]
         public Guid id { get; set; }
+        [DisplayName("Comment")]
         public string comment { get; set; }
         public Guid userId { get; set; }
         [ForeignKey("userId")]
